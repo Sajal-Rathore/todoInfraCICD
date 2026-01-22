@@ -3,15 +3,18 @@ trigger: none
 pool: shiva-pool
 
 stages:
-  - stage: 
+  - stage: Build_stage
     jobs:
     - job: 
+      
       steps:
       
       - task: TerraformInstaller@1
+        displayName: Terraform_install
         inputs:
           terraformVersion: 'latest'
       - task: TerraformTask@5
+        displayName: Terraform_init
         inputs:
           provider: 'azurerm'
           command: 'init'
@@ -20,3 +23,18 @@ stages:
           backendAzureRmStorageAccountName: 'shivastg'
           backendAzureRmContainerName: 'shivacontainer'
           backendAzureRmKey: 'shiva.tfstate'
+
+      - task: TerraformTask@5
+        displayName: Terraform_fmt
+        inputs:
+          provider: 'azurerm'
+          command: 'custom'
+          outputTo: 'console'
+          customCommand: 'fmt'
+          environmentServiceNameAzureRM: 'shiva-connection'
+
+      - task: TerraformTask@5
+        displayName: Terraform_validate
+        inputs:
+          provider: 'azurerm'
+          command: 'validate'
