@@ -1,0 +1,22 @@
+trigger: none
+
+pool: shiva-pool
+
+stages:
+  - stage: 
+    jobs:
+    - job: 
+      steps:
+      
+      - task: TerraformInstaller@1
+        inputs:
+          terraformVersion: 'latest'
+      - task: TerraformTask@5
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/todoapp_infra/dev'
+          backendServiceArm: 'shiva-connection'
+          backendAzureRmStorageAccountName: 'shivastg'
+          backendAzureRmContainerName: 'shivacontainer'
+          backendAzureRmKey: 'shiva.tfstate'
